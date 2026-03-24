@@ -84,14 +84,26 @@ if st.button('Recommend'):
        # Build the correct TMDB URL based on content type
             if item['type']=='Movie':
              url= f"https://www.themoviedb.org/movie/{item['id']}"
+             tag_color = "orange"
 
             else:
              url = f"https://www.themoviedb.org/tv/{item['id']}"
+             tag_color = "blue"
+
+             # This container acts as your "Box"
+            with st.container(border=True): 
+                col1, col2 = st.columns([0.8, 0.2])
+                
+                with col1:
+                    st.markdown(f"### {i}. [{item['title']}]({url})")
+                    st.caption(f"Type: {item['type']}")
+                
+                with col2:
+                    # A small visual indicator for the type
+                    st.markdown(f":{tag_color}[● {item['type']}]")
 
 
-           # 2. Display as a numbered clickable link using Markdown
-        # Format: [Text](URL)
-            st.markdown(f"{i}. **[{item['title']}]({url})**")
+        
 
 
 
