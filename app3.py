@@ -3,11 +3,7 @@ import pickle
 import pandas as pd
 import joblib
 
-# 1. Load the data
-#maindf_dict=pickle.load(open('main_df.pkl', 'rb'))
 
-##maindf=pd.DataFrame(maindf_dict)
-##similarity = pickle.load(open('similarity.pkl', 'rb'))
 
 # Load the saved models
 maindf = joblib.load('main_df.joblib')
@@ -23,13 +19,18 @@ def recommendationSystem(content,selected_filters):
         content_index = maindf[maindf['title']==content].index[0]
     
     else:
-        print("Content not found in database.")
+       
         return []
         
     
     distances=similarity[content_index]
+    # 2. Flatten the matrix (required for joblib/sparse matrices)
+    if hasattr(distances, "toarray"):
+        distances = distances.toarray()[0]
+    elif hasattr(distances, "flatten"):
+        distances = distances.flatten()
 
-    Suggestions=sorted(list(enumerate(distances)),reverse=True,key=lambda x: x[1])[1:50]
+    Suggestions=sorted(list(enumerate(distances)),reverse=True,key=lambda x: x[1])[1:151]
     
     recommend_Contents=[]
   
@@ -40,18 +41,23 @@ def recommendationSystem(content,selected_filters):
 
         # FILTER LOGIC: Only add if the content_type is in the user's list
         if row.content_type in selected_filters:
+            try:
+                # Convert the new release_year column to an integer
+                year_val = int(row['release_year'])
+            except:
+                year_val = 0
             recommend_Contents.append({
             'title':row.title,
             'id': row.id,
-            'type': row.content_type
+            'type': row.content_type,
+            'year': year_val
 
         })
         
         
-        if len(recommend_Contents)==10 :
-            break
+    recommend_Contents = sorted(recommend_Contents, key=lambda x: x['year'], reverse=True)
 
-    return recommend_Contents
+    return recommend_Contents[:20]
 
 
 # 3. now Build the Website UI
@@ -103,8 +109,9 @@ if st.button('Recommend'):
                 col1, col2 = st.columns([0.8, 0.2])
                 
                 with col1:
-                    st.markdown(f"### {i}. [{item['title']}]({url})")
-                    st.caption(f"Type: {item['type']}")
+                    # This adds the year in parentheses next to the title link
+                      st.markdown(f"### {i}. [{item['title']}]({url}) ({item['year']})")
+                      st.caption(f"Type: {item['type']}")
                 
                 with col2:
                     # A small visual indicator for the type
