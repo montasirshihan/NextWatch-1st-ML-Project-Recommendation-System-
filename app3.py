@@ -90,10 +90,14 @@ if st.button('Recommend'):
              url= f"https://www.themoviedb.org/movie/{item['id']}"
              tag_color = "orange"
 
+            elif item['type'] == 'Anime':
+    # This creates a search link that takes the user directly to the MAL search results for that title
+                search_query = item['title'].replace(' ', '+')
+                url = f"https://myanimelist.net/anime.php?q={search_query}"
+                tag_color = "green"
             else:
-             url = f"https://www.themoviedb.org/tv/{item['id']}"
-             tag_color = "blue"
-
+                  url = f"https://www.themoviedb.org/tv/{item['id']}"
+                  tag_color = "blue"
              # This container acts as your "Box"
             with st.container(border=True): 
                 col1, col2 = st.columns([0.8, 0.2])
