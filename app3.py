@@ -1,13 +1,17 @@
 import streamlit as st ##for building the UI of the website
 import pickle
 import pandas as pd
+import joblib
 
 # 1. Load the data
-maindf_dict=pickle.load(open('main_df.pkl', 'rb'))
+#maindf_dict=pickle.load(open('main_df.pkl', 'rb'))
 
-maindf=pd.DataFrame(maindf_dict)
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+##maindf=pd.DataFrame(maindf_dict)
+##similarity = pickle.load(open('similarity.pkl', 'rb'))
 
+# Load the saved models
+maindf = joblib.load('main_df.joblib')
+similarity = joblib.load('similarity.joblib')
 
 
 #no 2: the recommendation function

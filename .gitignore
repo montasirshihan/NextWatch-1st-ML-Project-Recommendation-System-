@@ -1,3 +1,11 @@
-*.pkl
+# Ignore large model files
+similarity.joblib
+similarity.pkl
+
+# Ignore temporary folders
+.ipynb_checkpoints/
+.virtual_documents/
+
+# Ignore Python cache
 __pycache__/
-.env
+*.py[cod]
